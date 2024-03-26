@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -21,7 +22,11 @@ public class PostService {
     }
 
     public Post getPostById(Long id) {
-        return postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isEmpty()) {
+            throw new RuntimeException("Post not found");
+        }
+        return post.get();
     }
 
     public Post createPost(Post post) {
@@ -29,10 +34,14 @@ public class PostService {
     }
 
     public Post updatePost(Long id, PostForm postForm) {
-        Post post = getPostById(id);
-        if (postForm.title != null) post.setTitle(postForm.title);
-        if (postForm.content != null) post.setContent(postForm.content);
-        return postRepository.save(post);
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isEmpty()) {
+            throw new RuntimeException("Post not found");
+        }
+        Post updatedPost = post.get();
+        if (postForm.title != null) updatedPost.setTitle(postForm.title);
+        if (postForm.content != null) updatedPost.setContent(postForm.content);
+        return postRepository.save(updatedPost);
     }
 
     public void deletePost(Long id) {

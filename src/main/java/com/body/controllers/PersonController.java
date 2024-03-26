@@ -4,10 +4,11 @@ import com.body.forms.PersonForm;
 import com.body.models.Person;
 import com.body.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -24,11 +25,13 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Person> getUserById(@PathVariable Long id) {
-        if (personService.getPersonById(id) == null) {
-            return Optional.empty();
+    public ResponseEntity<Person> getUserById(@PathVariable Long id) {
+        try {
+            Person person = personService.getPersonById(id);
+            return new ResponseEntity<>(person, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return Optional.ofNullable(personService.getPersonById(id));
     }
 
     @PostMapping
@@ -37,11 +40,13 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public Optional<Person> updateUser(@PathVariable Long id, @RequestBody PersonForm personForm) {
-        if (personService.getPersonById(id) == null) {
-            return Optional.empty();
+    public ResponseEntity<Person> updateUser(@PathVariable Long id, @RequestBody PersonForm personForm) {
+        try {
+            Person person = personService.updatePerson(id, personForm);
+            return new ResponseEntity<>(person, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return Optional.ofNullable(personService.updatePerson(id, personForm));
     }
 
     @DeleteMapping("/{id}")
