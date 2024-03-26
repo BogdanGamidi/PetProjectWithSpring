@@ -1,25 +1,25 @@
-CREATE TABLE IF NOT EXISTS users (
-    user_id serial PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS person (
+    id bigserial PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     login VARCHAR(30) NOT NULL,
     password VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS posts (
-    post_id serial PRIMARY KEY,
-    user_id INTEGER REFERENCES users(user_id),
+CREATE TABLE IF NOT EXISTS post (
+    id bigserial PRIMARY KEY,
+    person_id bigint REFERENCES person(id),
     title VARCHAR(50) NOT NULL,
     content TEXT
 );
 
-INSERT INTO users (first_name, last_name, login, password)
+INSERT INTO person (first_name, last_name, login, password)
 VALUES
     ('Billy', 'Herrington', 'billyherrington', 'Iamthebest'),
     ('Van', 'Darkholm', 'vandarkholm', 'Dungeonmaster'),
     ('Georgy', 'Gamidi', 'georgasm', 'Bossofthisgym');
 
-INSERT INTO posts (user_id, title, content)
+INSERT INTO post (person_id, title, content)
 VALUES
     (1, 'About GYM', 'Come here and fight with me'),
     (2, 'About dungeon', 'Invite you to my dungeon, sure you will like it'),

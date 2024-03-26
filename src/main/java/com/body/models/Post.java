@@ -3,16 +3,16 @@ package com.body.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "posts")
+@Table(name = "post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private User user;
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    private Person person;
 
     @Column(name = "title")
     private String title;
@@ -28,12 +28,12 @@ public class Post {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Person getPersonId() {
+        return person;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public String getTitle() {
