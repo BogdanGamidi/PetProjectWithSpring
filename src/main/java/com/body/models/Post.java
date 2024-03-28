@@ -28,7 +28,7 @@ public class Post {
         this.id = id;
     }
 
-    public Person getPersonId() {
+    public Person getPerson() {
         return person;
     }
 

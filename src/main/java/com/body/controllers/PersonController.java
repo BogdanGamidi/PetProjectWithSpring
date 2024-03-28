@@ -25,13 +25,11 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> getUserById(@PathVariable Long id) {
-        try {
-            Person person = personService.getPersonById(id);
-            return new ResponseEntity<>(person, HttpStatus.OK);
-        } catch (Exception e) {
+    public ResponseEntity<Person> getPersonById(@PathVariable Long id) {
+        if(personService.getRepository().findById(id).isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(personService.getRepository().findById(id).get(), HttpStatus.OK);
     }
 
     @PostMapping
@@ -41,20 +39,18 @@ public class PersonController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Person> updateUser(@PathVariable Long id, @RequestBody PersonForm personForm) {
-        try {
-            Person person = personService.updatePerson(id, personForm);
-            return new ResponseEntity<>(person, HttpStatus.OK);
-        } catch (Exception e) {
+        if(personService.getRepository().findById(id).isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(personService.updatePerson(id, personForm), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
-        if (personService.getPersonById(id) == null) {
-            return "User not found";
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        if (personService.getRepository().findById(id).isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         personService.deletePerson(id);
-        return "User was deleted";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

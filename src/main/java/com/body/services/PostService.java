@@ -17,16 +17,12 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public PostRepository getRepository() {
+        return postRepository;
     }
 
-    public Post getPostById(Long id) {
-        Optional<Post> post = postRepository.findById(id);
-        if (post.isEmpty()) {
-            throw new RuntimeException("Post not found");
-        }
-        return post.get();
+    public List<Post> getAllPosts() {
+        return postRepository.findAll();
     }
 
     public Post createPost(Post post) {
@@ -35,13 +31,10 @@ public class PostService {
 
     public Post updatePost(Long id, PostForm postForm) {
         Optional<Post> post = postRepository.findById(id);
-        if (post.isEmpty()) {
-            throw new RuntimeException("Post not found");
-        }
-        Post updatedPost = post.get();
-        if (postForm.title != null) updatedPost.setTitle(postForm.title);
-        if (postForm.content != null) updatedPost.setContent(postForm.content);
-        return postRepository.save(updatedPost);
+
+        if (postForm.title != null) post.get().setTitle(postForm.title);
+        if (postForm.content != null) post.get().setContent(postForm.content);
+        return postRepository.save(post.get());
     }
 
     public void deletePost(Long id) {

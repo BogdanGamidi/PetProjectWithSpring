@@ -17,16 +17,12 @@ public class PersonService {
         this.userRepository = userRepository;
     }
 
-    public List<Person> getAllPersons() {
-        return userRepository.findAll();
+    public PersonRepository getRepository() {
+        return userRepository;
     }
 
-    public Person getPersonById(Long id) {
-        Optional<Person> person = userRepository.findById(id);
-        if (person.isEmpty()) {
-            throw new RuntimeException("Person not found");
-        }
-        return person.get();
+    public List<Person> getAllPersons() {
+        return userRepository.findAll();
     }
 
     public Person createPerson(Person person) {
@@ -35,16 +31,12 @@ public class PersonService {
 
     public Person updatePerson(Long id, PersonForm personForm) {
         Optional<Person> person = userRepository.findById(id);
-        if (person.isEmpty()) {
-            throw new RuntimeException("Person not found");
-        }
         if (personForm.firstName != null) person.get().setFirstName(personForm.firstName);
         if (personForm.lastName != null) person.get().setLastName(personForm.lastName);
         if (personForm.login != null) person.get().setLogin(personForm.login);
         if (personForm.password != null) person.get().setPassword(personForm.password);
         return userRepository.save(person.get());
     }
-
 
     public void deletePerson(Long id) {
         userRepository.deleteById(id);

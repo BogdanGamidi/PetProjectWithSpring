@@ -1,6 +1,10 @@
 package com.body.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "person")
@@ -9,6 +13,9 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts = new ArrayList<>();
 
     @Column(name = "first_name")
     private String firstName;
