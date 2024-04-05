@@ -9,9 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/persons")
 public class PersonController {
     private final PersonService personService;
 
@@ -19,17 +20,41 @@ public class PersonController {
         this.personService = personService;
     }
 
-    @GetMapping
-    public List<Person> getAllUsers() {
-        return personService.getAllPersons();
+    @GetMapping("/admin")
+    public List<Person> findAllPersons() {
+        return personService.findAllPersons();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Person> getPersonById(@PathVariable Long id) {
-        if(personService.getRepository().findById(id).isEmpty()) {
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<Person> getUserById(@PathVariable String id) {
+        Optional <Person> person = personService.getRepository().findById(id);
+        if(person.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(personService.getRepository().findById(id).get(), HttpStatus.OK);
+        return new ResponseEntity<>(person.get(), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public List<Object> getAllPerson() {
+        return personService.getRepository().getAllPersons();
+    }
+
+    @GetMapping("/{firstName}")
+    public ResponseEntity<Object> getPersonByFirstName(@PathVariable String firstName) {
+        Optional <List<Object>> person = Optional.ofNullable(personService.getPersonByFirstName(firstName));
+        if(person.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(person.get(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{firstName}/{lastName}")
+    public ResponseEntity<Object> getPersonByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
+        Optional <List<Object>> person = Optional.ofNullable(personService.getPersonByFirstAndLastName(firstName, lastName));
+        if(person.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(person.get(), HttpStatus.OK);
     }
 
     @PostMapping
@@ -38,19 +63,21 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> updateUser(@PathVariable Long id, @RequestBody PersonForm personForm) {
-        if(personService.getRepository().findById(id).isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Person> updateUser(@PathVariable String id, @RequestBody PersonForm personForm) {
+        try {
+            return new ResponseEntity<>(personService.updatePerson(id, personForm), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(personService.updatePerson(id, personForm), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        if (personService.getRepository().findById(id).isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> deleteUser(@PathVariable String id) {
+        try {
+            personService.deletePerson(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        personService.deletePerson(id);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

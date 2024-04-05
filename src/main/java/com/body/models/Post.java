@@ -4,12 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "post")
-public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+public class Post extends BaseModel {
     @ManyToOne
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person person;
@@ -19,14 +14,6 @@ public class Post {
 
     @Column(name = "content")
     private String content;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Person getPerson() {
         return person;

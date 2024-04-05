@@ -13,15 +13,36 @@ CREATE TABLE IF NOT EXISTS post (
     content TEXT
 );
 
-INSERT INTO person (first_name, last_name, login, password)
-VALUES
-    ('Billy', 'Herrington', 'billyherrington', 'Iamthebest'),
-    ('Van', 'Darkholm', 'vandarkholm', 'Dungeonmaster'),
-    ('Georgy', 'Gamidi', 'georgasm', 'Bossofthisgym');
+CREATE TABLE IF NOT EXISTS subscription (
+    id bigserial PRIMARY KEY,
+    person_sender_id bigint REFERENCES person(id),
+    person_receiver_id bigint REFERENCES person(id),
+    created_date timestamp NOT NULL default current_timestamp
+);
 
-INSERT INTO post (person_id, title, content)
-VALUES
-    (1, 'About GYM', 'Come here and fight with me'),
-    (2, 'About dungeon', 'Invite you to my dungeon, sure you will like it'),
-    (3, 'About hospital', 'If you are sick, come here, i will cure you'),
-    (3, 'About secret', 'We all have some secrets');
+CREATE TABLE IF NOT EXISTS message (
+    id bigserial PRIMARY KEY,
+    person_sender_id bigint REFERENCES person(id),
+    person_receiver_id bigint REFERENCES person(id),
+    created_date timestamp NOT NULL default current_timestamp,
+    content TEXT
+);
+
+// function
+CREATE OR REPLACE FUNCTION person_do_post_fnc()
+    RETURNS trigger AS
+$$
+BEGIN
+    INSERT INTO "person_post" ("person_id", "post_id")
+VALUES (NEW."person_id", NEW."id");
+RETURN NEW;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+// trigger
+CREATE TRIGGER person_do_post_trigger
+    AFTER INSERT
+    ON "post"
+    FOR EACH ROW
+    EXECUTE PROCEDURE person_do_post_fnc();

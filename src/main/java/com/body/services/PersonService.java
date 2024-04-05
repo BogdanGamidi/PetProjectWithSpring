@@ -21,15 +21,31 @@ public class PersonService {
         return userRepository;
     }
 
-    public List<Person> getAllPersons() {
+    // admin call
+    public List<Person> findAllPersons() {
         return userRepository.findAll();
+    }
+
+    //user call
+    public List<Object> getAllPersons() {
+        return userRepository.getAllPersons();
+    }
+
+    //user call
+    public List<Object> getPersonByFirstName(String firstName) {
+        return userRepository.findByFirstName(firstName);
+    }
+
+    //user call
+    public List<Object> getPersonByFirstAndLastName(String firstName, String lastName) {
+        return userRepository.findByFirstNameAndLastName(firstName, lastName);
     }
 
     public Person createPerson(Person person) {
         return userRepository.save(person);
     }
 
-    public Person updatePerson(Long id, PersonForm personForm) {
+    public Person updatePerson(String id, PersonForm personForm) {
         Optional<Person> person = userRepository.findById(id);
         if (personForm.firstName != null) person.get().setFirstName(personForm.firstName);
         if (personForm.lastName != null) person.get().setLastName(personForm.lastName);
@@ -38,7 +54,7 @@ public class PersonService {
         return userRepository.save(person.get());
     }
 
-    public void deletePerson(Long id) {
+    public void deletePerson(String id) {
         userRepository.deleteById(id);
     }
 }
