@@ -1,7 +1,7 @@
 package com.body.controllers;
 
+import com.body.dto.PostOfPersonDto;
 import com.body.forms.PostForm;
-import com.body.forms.PostOfPerson;
 import com.body.models.Post;
 import com.body.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,26 +36,18 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Object> getAllPosts() {
+    public List<PostOfPersonDto> getAllPosts() {
         return postService.getAllPosts();
     }
 
-    @GetMapping("/{firstName}")
-    public ResponseEntity<List<Object>> getPostsByFirstNameOfPerson(@PathVariable String firstName) {
-        Optional<List<Object>> post = Optional.ofNullable(postService.getRepository().getPostsByFirstNameOfPerson(firstName));
-        if (post.isEmpty()) {
+    @GetMapping("/{id}")
+    public ResponseEntity<List<PostOfPersonDto>> getPostsByPersonId(@PathVariable String id) {
+        try {
+            return new ResponseEntity<>(postService.getRepository().getPostsByPersonId(id), HttpStatus.OK);
+        }
+        catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(post.get(), HttpStatus.OK);
-    }
-
-    @GetMapping("/{firstName}/{lastName}")
-    public ResponseEntity<List<Object>> getPostsByFirstAndLastNameOfPerson(@PathVariable String firstName, @PathVariable String lastName) {
-        Optional<List<Object>> post = Optional.ofNullable(postService.getRepository().getPostsByFirstAndLastNameOfPerson(firstName, lastName));
-        if (post.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(post.get(), HttpStatus.OK);
     }
 
     @PostMapping

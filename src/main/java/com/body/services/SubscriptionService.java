@@ -1,5 +1,6 @@
 package com.body.services;
 
+import com.body.dto.SubscriptionDto;
 import com.body.models.Subscription;
 import com.body.repositories.SubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class SubscriptionService {
         this.subscriptionRepository = subscriptionRepository;
     }
 
-    public SubscriptionRepository getSubscriptionRepository() {
+    public SubscriptionRepository getRepository() {
         return subscriptionRepository;
     }
 
@@ -25,8 +26,8 @@ public class SubscriptionService {
     }
 
     // user call
-    public List<Object> getSubscriptionsByPersonSender(String id) {
-        return subscriptionRepository.getSubscriptionsByPersonSender(id);
+    public List<SubscriptionDto> getSubscriptionsByPersonSenderId(String senderId) {
+        return subscriptionRepository.getSubscriptionsByPersonSenderId(senderId);
     }
 
     public Subscription createSubscription(Subscription subscription) {
@@ -40,6 +41,6 @@ public class SubscriptionService {
 
     // user call
     public void deleteSubscriptionByUser(String personSenderId, String personReceiverId) {
-        subscriptionRepository.deleteSubscription(personSenderId, personReceiverId);
+        subscriptionRepository.deleteSubscriptionByPersonSenderAndPersonReceiverId(personSenderId, personReceiverId);
     }
 }

@@ -3,9 +3,7 @@ package com.body.models;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @MappedSuperclass
 public abstract class BaseModel {
@@ -24,7 +22,12 @@ public abstract class BaseModel {
     public void setId(String id) {
         this.id = id;
     }
+
     public LocalDateTime getCreatedDate() {
         return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 }

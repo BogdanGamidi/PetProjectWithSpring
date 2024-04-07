@@ -1,5 +1,6 @@
 package com.body.controllers;
 
+import com.body.dto.PersonDto;
 import com.body.forms.PersonForm;
 import com.body.models.Person;
 import com.body.services.PersonService;
@@ -26,7 +27,7 @@ public class PersonController {
     }
 
     @GetMapping("/admin/{id}")
-    public ResponseEntity<Person> getUserById(@PathVariable String id) {
+    public ResponseEntity<Person> findPersonById(@PathVariable String id) {
         Optional <Person> person = personService.getRepository().findById(id);
         if(person.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -35,26 +36,17 @@ public class PersonController {
     }
 
     @GetMapping
-    public List<Object> getAllPerson() {
+    public List<PersonDto> getAllPersons() {
         return personService.getRepository().getAllPersons();
     }
 
-    @GetMapping("/{firstName}")
-    public ResponseEntity<Object> getPersonByFirstName(@PathVariable String firstName) {
-        Optional <List<Object>> person = Optional.ofNullable(personService.getPersonByFirstName(firstName));
-        if(person.isEmpty()) {
+    @GetMapping("/{id}")
+    public ResponseEntity<PersonDto> getPersonById(@PathVariable String id) {
+        try {
+            return new ResponseEntity<>(personService.getRepository().findPersonById(id), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(person.get(), HttpStatus.OK);
-    }
-
-    @GetMapping("/{firstName}/{lastName}")
-    public ResponseEntity<Object> getPersonByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
-        Optional <List<Object>> person = Optional.ofNullable(personService.getPersonByFirstAndLastName(firstName, lastName));
-        if(person.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(person.get(), HttpStatus.OK);
     }
 
     @PostMapping

@@ -1,5 +1,6 @@
 package com.body.controllers;
 
+import com.body.dto.SubscriptionDto;
 import com.body.models.Subscription;
 import com.body.services.SubscriptionService;
 import org.springframework.http.HttpStatus;
@@ -25,20 +26,20 @@ public class SubscriptionController {
 
     @GetMapping("/admin/{id}")
     public ResponseEntity<Subscription> findSubscriptionById(@PathVariable String id) {
-        Optional<Subscription> subscription = subscriptionService.getSubscriptionRepository().findById(id);
+        Optional<Subscription> subscription = subscriptionService.getRepository().findById(id);
         if(subscription.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(subscription.get(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<Object>> getSubscriptionsByPersonSender(@PathVariable String id) {
-        Optional<List<Object>> subscriptions = Optional.ofNullable(subscriptionService.getSubscriptionsByPersonSender(id));
-        if(subscriptions.isEmpty()) {
+    @GetMapping("/{senderId}")
+    public ResponseEntity<List<SubscriptionDto>> getSubscriptionsByPersonSenderId(@PathVariable String senderId) {
+        try {
+            return new ResponseEntity<>(subscriptionService.getRepository().getSubscriptionsByPersonSenderId(senderId), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(subscriptions.get(), HttpStatus.OK);
     }
 
     @PostMapping
@@ -61,9 +62,9 @@ public class SubscriptionController {
     }
 
     @DeleteMapping("/{personSenderId}/{personReceiverId}")
-    public ResponseEntity<String> deleteSubscription(@PathVariable String personSenderId, @PathVariable String personReceiverId) {
+    public ResponseEntity<String> deleteSubscriptionByPersonSenderAndPersonReceiverId(@PathVariable String personSenderId, @PathVariable String personReceiverId) {
         try {
-            subscriptionService.getSubscriptionRepository().deleteSubscription(personSenderId, personReceiverId);
+            subscriptionService.getRepository().deleteSubscriptionByPersonSenderAndPersonReceiverId(personSenderId, personReceiverId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

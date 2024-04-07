@@ -1,14 +1,12 @@
 package com.body.services;
 
+import com.body.dto.PostOfPersonDto;
 import com.body.forms.PostForm;
-import com.body.forms.PostOfPerson;
-import com.body.models.Person;
 import com.body.models.Post;
 import com.body.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,29 +28,13 @@ public class PostService {
     }
 
     // user call
-    public List<Object> getAllPosts() {
-//        List<Post> posts = postRepository.findAll();
-//        List<PostOfPerson> postOfPerson = new ArrayList<>();
-//        for (int i = 0; i < posts.size(); ++i) {
-//            PostOfPerson post = new PostOfPerson();
-//            post.firstName = posts.get(i).getPerson().getFirstName();
-//            post.lastName = posts.get(i).getPerson().getLastName();
-//            post.title = posts.get(i).getTitle();
-//            post.content = posts.get(i).getContent();
-//            postOfPerson.add(post);
-//        }
-//        return postOfPerson;
+    public List<PostOfPersonDto> getAllPosts() {
         return postRepository.getAllPosts();
     }
 
     // user call
-    public List<Object> getPostsByFirstNameOfPerson(String firstName) {
-        return postRepository.getPostsByFirstNameOfPerson(firstName);
-    }
-
-    // user call
-    public List<Object> getPostsByFirstAndLastNameOfPerson(String firstName, String lastName) {
-        return postRepository.getPostsByFirstAndLastNameOfPerson(firstName, lastName);
+    public List<PostOfPersonDto> getPostsByPersonId(String id) {
+        return postRepository.getPostsByPersonId(id);
     }
 
     public Post createPost(Post post) {

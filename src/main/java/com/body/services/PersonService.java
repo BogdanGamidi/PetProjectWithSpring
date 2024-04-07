@@ -1,9 +1,11 @@
 package com.body.services;
 
+import com.body.dto.PersonDto;
 import com.body.forms.PersonForm;
 import com.body.models.Person;
 import com.body.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +14,11 @@ import java.util.Optional;
 @Service
 public class PersonService {
     private final PersonRepository userRepository;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public PersonService(@Autowired PersonRepository userRepository) {
+    public PersonService(@Autowired PersonRepository userRepository, @Autowired NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.userRepository = userRepository;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     public PersonRepository getRepository() {
@@ -27,18 +31,13 @@ public class PersonService {
     }
 
     //user call
-    public List<Object> getAllPersons() {
+    public List<PersonDto> getAllPersons() {
         return userRepository.getAllPersons();
     }
 
     //user call
-    public List<Object> getPersonByFirstName(String firstName) {
-        return userRepository.findByFirstName(firstName);
-    }
-
-    //user call
-    public List<Object> getPersonByFirstAndLastName(String firstName, String lastName) {
-        return userRepository.findByFirstNameAndLastName(firstName, lastName);
+    public PersonDto getPersonById(String id) {
+        return userRepository.findPersonById(id);
     }
 
     public Person createPerson(Person person) {

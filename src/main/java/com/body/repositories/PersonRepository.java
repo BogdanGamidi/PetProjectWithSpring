@@ -1,5 +1,6 @@
 package com.body.repositories;
 
+import com.body.dto.PersonDto;
 import com.body.models.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,12 +10,9 @@ import java.util.List;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, String> {
-    @Query(value = "select person.id, person.first_name, person.last_name from person", nativeQuery = true)
-    List<Object> getAllPersons(); // <id, firstName, lastName>
+    @Query("select new com.body.dto.PersonDto(person.id, person.firstName, person.lastName) from Person person")
+    List<PersonDto> getAllPersons();
 
-    @Query(value = "select person.id, person.first_name, person.last_name from person where person.first_name = ?1", nativeQuery = true)
-    List<Object> findByFirstName(String firstName);
-
-    @Query(value = "select person.id, person.first_name, person.last_name from person where person.first_name = ?1 and person.last_name = ?2", nativeQuery = true)
-    List<Object> findByFirstNameAndLastName(String firstName, String lastName);
+    @Query("select new com.body.dto.PersonDto(person.id, person.firstName, person.lastName) from Person person where person.id = :id")
+    PersonDto findPersonById(String id);
 }

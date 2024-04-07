@@ -9,10 +9,10 @@ public class Post extends BaseModel {
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person person;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
     public Person getPerson() {
