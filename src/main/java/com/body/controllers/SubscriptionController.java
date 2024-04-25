@@ -27,19 +27,19 @@ public class SubscriptionController {
     @GetMapping("/admin/{id}")
     public ResponseEntity<Subscription> findSubscriptionById(@PathVariable String id) {
         Optional<Subscription> subscription = subscriptionService.getRepository().findById(id);
-        if(subscription.isEmpty()) {
+        if (subscription.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(subscription.get(), HttpStatus.OK);
     }
 
     @GetMapping("/{senderId}")
-    public ResponseEntity<List<SubscriptionDto>> getSubscriptionsByPersonSenderId(@PathVariable String senderId) {
-        try {
-            return new ResponseEntity<>(subscriptionService.getRepository().getSubscriptionsByPersonSenderId(senderId), HttpStatus.OK);
-        } catch (Exception e) {
+    public ResponseEntity<List<SubscriptionDto>> getSubscriptionsDtoByPersonSenderId(@PathVariable String senderId) {
+        List<SubscriptionDto> subscriptionsDto = subscriptionService.getSubscriptionsDtoByPersonSenderId(senderId);
+        if (subscriptionsDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(subscriptionsDto, HttpStatus.OK);
     }
 
     @PostMapping
@@ -64,7 +64,7 @@ public class SubscriptionController {
     @DeleteMapping("/{personSenderId}/{personReceiverId}")
     public ResponseEntity<String> deleteSubscriptionByPersonSenderAndPersonReceiverId(@PathVariable String personSenderId, @PathVariable String personReceiverId) {
         try {
-            subscriptionService.getRepository().deleteSubscriptionByPersonSenderAndPersonReceiverId(personSenderId, personReceiverId);
+            subscriptionService.deleteSubscriptionByUser(personSenderId, personReceiverId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

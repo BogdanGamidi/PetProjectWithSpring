@@ -36,18 +36,17 @@ public class PostController {
     }
 
     @GetMapping
-    public List<PostOfPersonDto> getAllPosts() {
-        return postService.getAllPosts();
+    public List<PostOfPersonDto> getAllPostsDto() {
+        return postService.getAllPostsDto();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<PostOfPersonDto>> getPostsByPersonId(@PathVariable String id) {
-        try {
-            return new ResponseEntity<>(postService.getRepository().getPostsByPersonId(id), HttpStatus.OK);
-        }
-        catch (Exception e) {
+    public ResponseEntity<List<PostOfPersonDto>> getPostsDtoByPersonId(@PathVariable String id) {
+        List<PostOfPersonDto> postOfPersonDto = postService.getPostsDtoByPersonId(id);
+        if (postOfPersonDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(postOfPersonDto, HttpStatus.OK);
     }
 
     @PostMapping
