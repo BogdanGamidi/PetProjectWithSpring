@@ -10,9 +10,9 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, String> {
-    @Query("select new com.body.dto.PostOfPersonDto(post.id, person.firstName, person.lastName, post.title, post.content) from Post post join Person person on person.id = post.person.id")
-    List<PostOfPersonDto> getAllPosts();
+    @Query(value = "select new com.body.dto.PostOfPersonDto(post.id, person.firstName, person.lastName, post.content) from Post post join Person per on per.id = post.person.id")
+    List<PostOfPersonDto> getAllPostsDto();
 
-    @Query("select new com.body.dto.PostOfPersonDto(post.id, person.firstName, person.lastName, post.title, post.content) from Post post join Person person on person.id = post.person.id where person.id = :id")
-    List<PostOfPersonDto> getPostsByPersonId(String id);
+    @Query(value = "select new com.body.dto.PostOfPersonDto(post.id, person.firstName, person.lastName, post.content) from Post post join Person per on per.id = post.person.id where per.id = :id")
+    List<PostOfPersonDto> getPostsDtoByPersonId(String id);
 }

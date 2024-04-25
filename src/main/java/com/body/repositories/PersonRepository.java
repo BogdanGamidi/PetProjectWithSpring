@@ -10,9 +10,9 @@ import java.util.List;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, String> {
-    @Query("select new com.body.dto.PersonDto(person.id, person.firstName, person.lastName) from Person person")
-    List<PersonDto> getAllPersons();
+    @Query(value = "select new com.body.dto.PersonDto(id, firstName, lastName) from Person")
+    List<PersonDto> getAllPersonsDto();
 
-    @Query("select new com.body.dto.PersonDto(person.id, person.firstName, person.lastName) from Person person where person.id = :id")
-    PersonDto findPersonById(String id);
+    @Query(value = "select new com.body.dto.PersonDto(id, firstName, lastName) from Person where id = :id")
+    PersonDto getPersonDtoById(String id);
 }
