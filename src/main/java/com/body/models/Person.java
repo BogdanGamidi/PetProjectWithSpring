@@ -1,7 +1,6 @@
 package com.body.models;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +22,9 @@ public class Person extends BaseModel{
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    public Person() {
+    }
 
     public String getFirstName() {
         return firstName;
