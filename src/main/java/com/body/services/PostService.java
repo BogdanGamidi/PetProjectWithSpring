@@ -4,6 +4,8 @@ import com.body.dto.PostOfPersonDto;
 import com.body.forms.PostForm;
 import com.body.models.Post;
 import com.body.repositories.PostRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import java.util.Optional;
 
 @Service
 public class PostService {
+    private final Logger logger = LogManager.getLogger(getClass());
     private final PostRepository postRepository;
 
     public PostService(@Autowired PostRepository postRepository) {
@@ -28,13 +31,19 @@ public class PostService {
     }
 
     // user call
-    public List<PostOfPersonDto> getAllPosts() {
-        return postRepository.getAllPosts();
+    public List<PostOfPersonDto> getAllPostsDto() {
+        return postRepository.getAllPostsDto();
     }
 
     // user call
-    public List<PostOfPersonDto> getPostsByPersonId(String id) {
-        return postRepository.getPostsByPersonId(id);
+    public List<PostOfPersonDto> getPostsDtoByPersonId(String id) {
+        List<PostOfPersonDto> postsOfPersonDto = null;
+        try {
+            postsOfPersonDto = postRepository.getPostsDtoByPersonId(id);
+        } catch (Exception e) {
+            logger.error("Person with id {} not found", id);
+        }
+        return postsOfPersonDto;
     }
 
     public Post createPost(Post post) {
@@ -43,8 +52,6 @@ public class PostService {
 
     public Post updatePost(String id, PostForm postForm) {
         Optional<Post> post = postRepository.findById(id);
-
-        if (postForm.title != null) post.get().setTitle(postForm.title);
         if (postForm.content != null) post.get().setContent(postForm.content);
         return postRepository.save(post.get());
     }
